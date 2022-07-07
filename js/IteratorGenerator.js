@@ -70,7 +70,53 @@ let iter = genny();
 
 // NOTE - Remember, Objects do not have built-in iterators. If you want an iterator to step through an object, you have to build it!
 
-function* genny2(){
-  yield 'a';
+let starwars8 = {
+  title: 'The Last Jedi',
+  director: 'Rian Johnson',
+  year: '2017',
+  boxOffice: '1.3B',
+};
+// NOTE - Count to help us step through properties.
+let count = -1;
+
+// NOTE - create an object to be a generator to return some or all of the starwars8 object properties (below).
+
+let SW8generator = {
+  [Symbol.iterator]: function(obj){
+    return {
+      next: ()=>{
+        count++;
+        switch(count) {
+          case 0:
+            return {
+              value: obj.title,
+              done: false,
+            }
+          case 1:
+            return {
+              value: obj.year,
+              done: false,
+            }
+          case 2:
+            return {
+              value: obj.director,
+              done: false,
+            }
+            // NOTE - 'default' with switch returns the 'values' and 'done' propreties. Otherwise, if not defined in this generator, every successive use of next() simply returns 'undefined' in the console.
+          default:
+            return {
+              value: undefined,
+              done: true,
+            }
+        }
+      }
+    }
+  }
 }
-let iter2 = genny2();
+
+let data = SW8generator[Symbol.iterator](starwars8)
+log(data.next());
+log(data.next());
+log(data.next());
+log(data.next());
+log(data.next());
