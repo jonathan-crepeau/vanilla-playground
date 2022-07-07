@@ -70,53 +70,127 @@ let iter = genny();
 
 // NOTE - Remember, Objects do not have built-in iterators. If you want an iterator to step through an object, you have to build it!
 
-let starwars8 = {
-  title: 'The Last Jedi',
-  director: 'Rian Johnson',
-  year: '2017',
-  boxOffice: '1.3B',
-};
+// let starwars8 = {
+//   title: 'The Last Jedi',
+//   director: 'Rian Johnson',
+//   year: '2017',
+//   boxOffice: '1.3B',
+// };
 // NOTE - Count to help us step through properties.
-let count = -1;
+// let count = -1;
 
 // NOTE - create an object to be a generator to return some or all of the starwars8 object properties (below).
 
-let SW8generator = {
-  [Symbol.iterator]: function(obj){
+// let SW8generator = {
+//   [Symbol.iterator]: function(obj){
+//     return {
+//       next: ()=>{
+//         count++;
+//         switch(count) {
+//           case 0:
+//             return {
+//               value: obj.title,
+//               done: false,
+//             }
+//           case 1:
+//             return {
+//               value: obj.year,
+//               done: false,
+//             }
+//           case 2:
+//             return {
+//               value: obj.director,
+//               done: false,
+//             }
+//             // NOTE - 'default' with switch returns the 'values' and 'done' propreties. Otherwise, if not defined in this generator, every successive use of next() simply returns 'undefined' in the console.
+//           default:
+//             return {
+//               value: undefined,
+//               done: true,
+//             }
+//         }
+//       }
+//     }
+//   }
+// }
+
+// let data = SW8generator[Symbol.iterator](starwars8)
+// log(data.next());
+// log(data.next());
+// log(data.next());
+// log(data.next());
+// log(data.next());
+
+
+// ======================
+// SECTION Example 2 - Customer Iterators & Prototypes
+// ======================
+
+// NOTE Thesis - finish Steve's examples, then create new object and set prototype to Obj1 or Obj2
+// also, set count outside to see if we can get around 'data1 = ....' and data2 = ...'
+
+let Obj1 = {
+  title: 'The Last Jedi',
+  director: 'Rian Johnson',
+  year: 2017,
+};
+
+let Obj2 = {
+  title: 'The Hobbit',
+  director: 'Peter Jackson',
+  boxOffice: '1.017B',
+};
+
+let myGenerator = {
+  [Symbol.iterator]: function() {
+    let count = -1;
     return {
-      next: ()=>{
+      next: () => {
         count++;
         switch(count) {
           case 0:
             return {
-              value: obj.title,
+              value: this.title ? this.title: 'No title property',
               done: false,
-            }
+            };
           case 1:
             return {
-              value: obj.year,
-              done: false,
-            }
+              value: this.year ? this.year : 'No year property',
+              done: false
+            };
           case 2:
             return {
-              value: obj.director,
-              done: false,
-            }
-            // NOTE - 'default' with switch returns the 'values' and 'done' propreties. Otherwise, if not defined in this generator, every successive use of next() simply returns 'undefined' in the console.
+              value: this.director ? this.director : 'No director property',
+              done: false
+            };
           default:
-            return {
-              value: undefined,
-              done: true,
-            }
+            return { value: undefined, done: true};
         }
-      }
-    }
-  }
+      },
+    };
+  },
+};
+
+Object.setPrototypeOf(Obj1, myGenerator);
+Object.setPrototypeOf(Obj2, myGenerator);
+
+let data1 = Obj1[Symbol.iterator]();
+// for (let a = 0; a < Object.keys(Obj1).length; a++){
+//   log(data1.next())
+// }
+
+for (let prop of Obj1){
+  log(prop);
+}
+log('\n\n');
+
+
+let data2 = Obj2[Symbol.iterator]();
+// for (let a = 0; a < Object.keys(Obj2).length; a++) {
+// log(data2.next())
+// }
+
+for (let prop of Obj2){
+  log(prop);
 }
 
-let data = SW8generator[Symbol.iterator](starwars8)
-log(data.next());
-log(data.next());
-log(data.next());
-log(data.next());
-log(data.next());
